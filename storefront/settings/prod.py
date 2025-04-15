@@ -9,7 +9,10 @@ ALLOWED_HOSTS = [host for host in os.environ.get("ALLOWED_HOSTS").split(",") if 
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
 DATABASES = {
-    "default": dj_database_url.parse(os.environ.get("DATABASE_URL"))
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
 
 MIDDLEWARE += ["whitenoise.middleware.WhiteNoiseMiddleware"] # noqa: F405
