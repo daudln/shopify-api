@@ -9,14 +9,7 @@ ALLOWED_HOSTS = [host for host in os.environ.get("ALLOWED_HOSTS").split(",") if 
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("DATABASE"),
-        "USER": os.getenv("DATABASE_USER"),
-        "PASSWORD": os.getenv("DATABASE_PASSWORD"),
-        "HOST": os.getenv("DATABASE_HOST"),  # check this!
-        "PORT": os.getenv("DATABASE_PORT"),
-    }
+    "default": dj_database_url.parse(os.environ.get("DATABASE_URL"))
 }
 
 MIDDLEWARE += ["whitenoise.middleware.WhiteNoiseMiddleware"] # noqa: F405
