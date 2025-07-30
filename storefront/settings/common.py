@@ -169,36 +169,47 @@ CELERY_BEAT_SCHEDULE = {
     },
 }
 
+LOG_FILE_PATH = os.path.join(BASE_DIR, 'logs', 'application_log.log')
+
+os.makedirs(os.path.dirname(LOG_FILE_PATH), exist_ok=True)
+
 LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "handlers": {
-        "console": {
-            "class": "logging.StreamHandler",
-            "formatter": "verbose",
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'filename': LOG_FILE_PATH,
+            'formatter': 'verbose',
+            'when': 'midnight',  # Rotate at midnight
+            'interval': 1,  # Every 1 day
+            'backupCount': 7,  # Keep 7 days of logs
         },
-        "file": {
-            "class": "logging.FileHandler",
-            "filename": "general.log",
-            "formatter": "verbose",
-        },
-    },
-    "loggers": {
-        "": {
-            "handlers": ["console", "file"],
-            "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
-            "propagate": False,
+        'console': {  # Optional: for debugging in development
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
         },
     },
-    "formatters": {
-        "verbose": {
-            "format": "{asctime} {levelname} - ({name}) - {message}",
-            "style": "{",  # string.format()
+    'loggers': {
+        'django': {
+            'handlers': ['file', 'console'],
+            'level': 'WARNING',  # Log WARNING and above
+            'propagate': False,
+        },
+        '': {  # Root logger for your app
+            'handlers': ['file', 'console'],
+            'level': 'WARNING',  # Log WARNING and above
+            'propagate': False,
+        },
+    },
+    'formatters': {
+        'verbose': {
+            'format': '{asctime} {levelname} - ({name}) - {message}',
+            'style': '{',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
         },
     },
 }
-
-
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "Shopify API",
